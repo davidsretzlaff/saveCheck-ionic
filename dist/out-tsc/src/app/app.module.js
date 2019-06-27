@@ -13,6 +13,12 @@ import { BrandService } from 'src/services/domain/brand.service';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { AuthService } from 'src/services/domain/auth.service';
 import { StorageService } from 'src/services/domain/storage.service';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -29,7 +35,14 @@ var AppModule = /** @class */ (function () {
                 BrandService,
                 Keyboard,
                 AuthService,
-                StorageService
+                StorageService,
+                FileTransfer,
+                FileTransferObject,
+                File,
+                Deeplinks,
+                Camera,
+                BarcodeScanner,
+                AndroidPermissions
             ],
             bootstrap: [AppComponent]
         })

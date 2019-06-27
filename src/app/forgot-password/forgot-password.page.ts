@@ -29,9 +29,11 @@ export class ForgotPasswordPage implements OnInit {
       await this.authService.forgot_password(this.userLogin)
     } catch (error) {
       this.presentToast(error.message);
+      
     } finally {
+      this.presentToast("Email enviado");
+      this.router.navigate(['login']);
       this.loading.dismiss();
-      this.router.navigate(['reset-password'])
     }
   }
 

@@ -35,6 +35,7 @@ var ForgotPasswordPage = /** @class */ (function () {
                         this.presentToast(error_1.message);
                         return [3 /*break*/, 6];
                     case 5:
+                        this.presentToast("Email enviado");
                         this.loading.dismiss();
                         this.router.navigate(['reset-password']);
                         return [7 /*endfinally*/];

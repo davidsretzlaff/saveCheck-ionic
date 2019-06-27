@@ -1,12 +1,16 @@
 import * as tslib_1 from "tslib";
 import { Component, ViewChild } from '@angular/core';
-import { IonSlides, ToastController, LoadingController, ActionSheetController } from '@ionic/angular';
+import { IonSlides, ModalController, ToastController, LoadingController, ActionSheetController } from '@ionic/angular';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { ProductService } from 'src/services/domain/product.service';
 import { Router } from '@angular/router';
 import { BrandService } from 'src/services/domain/brand.service';
+import { FileTransfer } from '@ionic-native/file-transfer/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { FormBuilder, Validators } from '@angular/forms';
 var NewProductPage = /** @class */ (function () {
-    function NewProductPage(keyboard, loadingCtrl, toastCtrl, productService, brandService, router, actionSheetCtrl) {
+    function NewProductPage(keyboard, loadingCtrl, toastCtrl, productService, brandService, router, actionSheetCtrl, transfer, camera, file, modalCtrl, fBuilder) {
         this.keyboard = keyboard;
         this.loadingCtrl = loadingCtrl;
         this.toastCtrl = toastCtrl;
@@ -14,8 +18,25 @@ var NewProductPage = /** @class */ (function () {
         this.brandService = brandService;
         this.router = router;
         this.actionSheetCtrl = actionSheetCtrl;
+        this.transfer = transfer;
+        this.camera = camera;
+        this.file = file;
+        this.modalCtrl = modalCtrl;
+        this.fBuilder = fBuilder;
         this.product = {};
         this.brand = {};
+        this.fGroupProduct = this.fBuilder.group({
+            'name': [null, Validators.compose([
+                    Validators.required,
+                    Validators.minLength(4),
+                ])],
+        }, { updateOn: 'blur' });
+        this.fGroupBrand = this.fBuilder.group({
+            'name': [null, Validators.compose([
+                    Validators.required,
+                    Validators.minLength(4),
+                ])],
+        }, { updateOn: 'blur' });
     }
     NewProductPage.prototype.ngOnInit = function () {
     };
@@ -27,63 +48,79 @@ var NewProductPage = /** @class */ (function () {
             this.slides.slideNext();
         }
     };
-    NewProductPage.prototype.presentActionSheet = function () {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var actionSheet;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.actionSheetCtrl.create({
-                            header: 'Selecione a fonte da imagem',
-                            buttons: [{
-                                    text: 'Galeria',
-                                    role: 'destructive',
-                                    icon: 'trash',
-                                    handler: function () {
-                                        //this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
-                                    }
-                                }, {
-                                    text: 'Camera',
-                                    icon: 'share',
-                                    handler: function () {
-                                        // this.takePicture(this.camera.PictureSourceType.CAMERA);
-                                    }
-                                }, {
-                                    text: 'Cancelar',
-                                    role: 'cancel'
-                                }]
-                        })];
-                    case 1:
-                        actionSheet = _a.sent();
-                        return [4 /*yield*/, actionSheet.present()];
-                    case 2:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
+    //   async presentActionSheet(){
+    //    let actionSheet = await this.actionSheetCtrl.create({
+    //     header: 'Selecione a fonte da imagem',
+    //     buttons: [{
+    //       text: 'Galeria',
+    //       role: 'destructive',
+    //       icon: 'trash',
+    //       handler: () => {
+    //         this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
+    //       }
+    //     }, {
+    //       text: 'Camera',
+    //       icon: 'share',
+    //       handler: () => {
+    //         this.takePicture(this.camera.PictureSourceType.CAMERA);
+    //       }
+    //     }, {
+    //       text:'Cancelar',
+    //       role:'cancel'
+    //     }]
+    //   });
+    //   await actionSheet.present();
+    // }
+    // async takePicture(sourceType) {
+    //   // Create options for the Camera Dialog
+    //   var options = {
+    //     quality: 100,
+    //     destinationType: this.camera.DestinationType.FILE_URI,
+    //     sourceType: sourceType,
+    //     saveToPhotoAlbum: false,
+    //     correctOrientation: true
+    //   };
+    //    this.camera.getPicture(options).then(async (imagePath) => {
+    //     this.productService.uploadImage(imagePath, 'test').then(res => {
+    //     }, err => {
+    //       this.dismiss();
+    //     });
+    //   }
+    //     modal.present();
+    //   }, (err) => {
+    //     console.log('Error: ', err);
+    //   });
+    // }
     NewProductPage.prototype.newProduct = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var error_1;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.presentLoading()];
                     case 1:
                         _a.sent();
                         this.Succes = true;
-                        try {
-                            //await this.productService.newProduct(this.product)
+                        this.product.name = this.fGroupProduct.value.name;
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, 5, 6]);
+                        return [4 /*yield*/, this.productService.newProduct(this.product)];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 4:
+                        error_1 = _a.sent();
+                        if (error_1.status != 201)
+                            this.Succes = false;
+                        this.presentToast(error_1.error.error);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        if (this.Succes) {
+                            this.router.navigate(['tabs/search']);
+                            this.presentToast("Produto adicionado na lista de pendentes");
                         }
-                        catch (error) {
-                            if (error.status != 201)
-                                this.Succes = false;
-                            this.presentToast(error.error.error);
-                        }
-                        finally {
-                            if (this.Succes) {
-                                this.router.navigate(['tabs/search']);
-                                this.presentToast("Produto adicionado na lista de pendentes");
-                            }
-                        }
+                        return [7 /*endfinally*/];
+                    case 6:
                         this.loading.dismiss();
                         return [2 /*return*/];
                 }
@@ -92,12 +129,13 @@ var NewProductPage = /** @class */ (function () {
     };
     NewProductPage.prototype.newBrand = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var error_1;
+            var error_2;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.presentLoading()];
                     case 1:
                         _a.sent();
+                        this.brand.name = this.fGroupBrand.value.name;
                         this.Succes = true;
                         _a.label = 2;
                     case 2:
@@ -107,10 +145,10 @@ var NewProductPage = /** @class */ (function () {
                         _a.sent();
                         return [3 /*break*/, 6];
                     case 4:
-                        error_1 = _a.sent();
-                        if (error_1.status != 201)
+                        error_2 = _a.sent();
+                        if (error_2.status != 201)
                             this.Succes = false;
-                        this.presentToast(error_1.error.error);
+                        this.presentToast(error_2.error.error);
                         return [3 /*break*/, 6];
                     case 5:
                         this.loading.dismiss();
@@ -169,7 +207,12 @@ var NewProductPage = /** @class */ (function () {
             ProductService,
             BrandService,
             Router,
-            ActionSheetController])
+            ActionSheetController,
+            FileTransfer,
+            Camera,
+            File,
+            ModalController,
+            FormBuilder])
     ], NewProductPage);
     return NewProductPage;
 }());

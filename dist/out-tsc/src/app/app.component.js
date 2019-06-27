@@ -3,11 +3,13 @@ import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 var AppComponent = /** @class */ (function () {
-    function AppComponent(platform, splashScreen, statusBar) {
+    function AppComponent(platform, splashScreen, statusBar, deeplinks) {
         this.platform = platform;
         this.splashScreen = splashScreen;
         this.statusBar = statusBar;
+        this.deeplinks = deeplinks;
         this.initializeApp();
     }
     AppComponent.prototype.initializeApp = function () {
@@ -24,7 +26,8 @@ var AppComponent = /** @class */ (function () {
         }),
         tslib_1.__metadata("design:paramtypes", [Platform,
             SplashScreen,
-            StatusBar])
+            StatusBar,
+            Deeplinks])
     ], AppComponent);
     return AppComponent;
 }());

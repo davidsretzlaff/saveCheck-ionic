@@ -27,6 +27,54 @@ var BrandService = /** @class */ (function () {
             });
         });
     };
+    BrandService.prototype.newComment = function (comment) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.http.put(API_CONFIG.baseUrl + "/brand/comments/" + comment.brandId, comment)
+                .subscribe(function (result) {
+                resolve(result);
+            }, function (error) {
+                console.log("ERRO na requisiçao", error.error);
+                reject(error);
+            });
+        });
+    };
+    BrandService.prototype.deleteComment = function (comment) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.http.put(API_CONFIG.baseUrl + "/brand/deletecomments/" + comment.brandId, comment)
+                .subscribe(function (result) {
+                resolve(result);
+            }, function (error) {
+                console.log("ERRO na requisiçao", error.error);
+                reject(error);
+            });
+        });
+    };
+    BrandService.prototype.like = function (like) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.http.put(API_CONFIG.baseUrl + "/brand/like/" + like.brandId, like)
+                .subscribe(function (result) {
+                resolve(result);
+            }, function (error) {
+                console.log("ERRO na requisiçao", error.error);
+                reject(error);
+            });
+        });
+    };
+    BrandService.prototype.dislike = function (like) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.http.put(API_CONFIG.baseUrl + "/brand/dislike/" + like.brandId, like)
+                .subscribe(function (result) {
+                resolve(result);
+            }, function (error) {
+                console.log("ERRO na requisiçao", error.error);
+                reject(error);
+            });
+        });
+    };
     BrandService = tslib_1.__decorate([
         Injectable(),
         tslib_1.__metadata("design:paramtypes", [HttpClient])

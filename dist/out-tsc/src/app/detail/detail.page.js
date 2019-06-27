@@ -17,6 +17,7 @@ var DetailPage = /** @class */ (function () {
         this.loadingCtrl = loadingCtrl;
         this.toastCtrl = toastCtrl;
         this.comment = {};
+        this.like = {};
         this.imageUrl = API_CONFIG.baseUrl;
     }
     DetailPage.prototype.ngOnInit = function () {
@@ -24,37 +25,321 @@ var DetailPage = /** @class */ (function () {
         this.type = this.route.snapshot.paramMap.get('type');
         this.product = null;
         this.brand = null;
+        this.usr = this.storage.getLocalUser();
         this.fillItens();
     };
-    DetailPage.prototype.addComments = function () {
+    DetailPage.prototype.addCommentsProduct = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var usr, error_1;
+            var error_1;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        usr = this.storage.getLocalUser();
-                        this.comment.email = usr.email;
+                        this.comment.email = this.usr.email;
                         this.comment.productId = this.id;
-                        _a.label = 1;
+                        this.Succes = true;
+                        return [4 /*yield*/, this.presentLoading()];
                     case 1:
-                        _a.trys.push([1, 3, 4, 5]);
-                        return [4 /*yield*/, this.productService.newComment(this.comment)];
+                        _a.sent();
+                        _a.label = 2;
                     case 2:
+                        _a.trys.push([2, 6, 7, 8]);
+                        if (!this.comment.description) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.productService.newComment(this.comment)];
+                    case 3:
                         _a.sent();
                         return [3 /*break*/, 5];
-                    case 3:
+                    case 4:
+                        this.Succes = false;
+                        this.presentToast("Comentário inválido");
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 8];
+                    case 6:
                         error_1 = _a.sent();
                         if (error_1.status != 201)
                             this.Succes = false;
                         this.presentToast(error_1.error.error);
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 8];
+                    case 7:
                         if (this.Succes) {
                             this.fillItens();
                             this.presentToast("Comentário adicionado");
+                            this.comment.description = null;
                         }
+                        this.loading.dismiss();
                         return [7 /*endfinally*/];
-                    case 5: return [2 /*return*/];
+                    case 8: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DetailPage.prototype.deleteCommentsProduct = function (id) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var error_2;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.comment.email = this.usr.email;
+                        this.comment.productId = this.id;
+                        this.comment._id = id;
+                        this.Succes = true;
+                        return [4 /*yield*/, this.presentLoading()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, 5, 6]);
+                        return [4 /*yield*/, this.productService.deleteComment(this.comment)];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 4:
+                        error_2 = _a.sent();
+                        if (error_2.status != 201)
+                            this.Succes = false;
+                        this.presentToast(error_2.error.error);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        if (this.Succes) {
+                            this.fillItens();
+                            this.presentToast("Comentário Excluído");
+                            this.comment.description = null;
+                        }
+                        this.loading.dismiss();
+                        return [7 /*endfinally*/];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DetailPage.prototype.addCommentsBrand = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var error_3;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.comment.email = this.usr.email;
+                        this.comment.brandId = this.id;
+                        this.Succes = true;
+                        return [4 /*yield*/, this.presentLoading()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 6, 7, 8]);
+                        if (!this.comment.description) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.brandService.newComment(this.comment)];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 5];
+                    case 4:
+                        this.Succes = false;
+                        this.presentToast("Comentário inválido");
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 8];
+                    case 6:
+                        error_3 = _a.sent();
+                        if (error_3.status != 201)
+                            this.Succes = false;
+                        this.presentToast(error_3.error.error);
+                        return [3 /*break*/, 8];
+                    case 7:
+                        if (this.Succes) {
+                            this.fillItens();
+                            this.presentToast("Comentário adicionado");
+                            this.comment.description = null;
+                        }
+                        this.loading.dismiss();
+                        return [7 /*endfinally*/];
+                    case 8: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DetailPage.prototype.deleteCommentsBrand = function (id) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var error_4;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.comment.email = this.usr.email;
+                        this.comment.brandId = this.id;
+                        this.comment._id = id;
+                        this.Succes = true;
+                        return [4 /*yield*/, this.presentLoading()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, 5, 6]);
+                        return [4 /*yield*/, this.brandService.deleteComment(this.comment)];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 4:
+                        error_4 = _a.sent();
+                        if (error_4.status != 201)
+                            this.Succes = false;
+                        this.presentToast(error_4.error.error);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        if (this.Succes) {
+                            this.fillItens();
+                            this.presentToast("Comentário Excluído");
+                            this.comment.description = null;
+                        }
+                        this.loading.dismiss();
+                        return [7 /*endfinally*/];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DetailPage.prototype.likeBrand = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var error_5;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.like.email = this.usr.email;
+                        this.like.brandId = this.id;
+                        this.Succes = true;
+                        return [4 /*yield*/, this.presentLoading()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, 5, 6]);
+                        return [4 /*yield*/, this.brandService.like(this.like)];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 4:
+                        error_5 = _a.sent();
+                        if (error_5.status != 201)
+                            this.Succes = false;
+                        this.presentToast(error_5.error.error);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        if (this.Succes) {
+                            this.fillItens();
+                            this.presentToast("Você curtiu isso");
+                            this.comment.description = null;
+                        }
+                        this.loading.dismiss();
+                        return [7 /*endfinally*/];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DetailPage.prototype.likeProduct = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var error_6;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.like.email = this.usr.email;
+                        this.like.brandId = this.id;
+                        this.Succes = true;
+                        return [4 /*yield*/, this.presentLoading()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, 5, 6]);
+                        return [4 /*yield*/, this.productService.like(this.like)];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 4:
+                        error_6 = _a.sent();
+                        if (error_6.status != 201)
+                            this.Succes = false;
+                        this.presentToast(error_6.error.error);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        if (this.Succes) {
+                            this.fillItens();
+                            this.presentToast("Você curtiu isso");
+                            this.comment.description = null;
+                        }
+                        this.loading.dismiss();
+                        return [7 /*endfinally*/];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DetailPage.prototype.dislikeBrand = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var error_7;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.like.email = this.usr.email;
+                        this.like.brandId = this.id;
+                        this.Succes = true;
+                        return [4 /*yield*/, this.presentLoading()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, 5, 6]);
+                        return [4 /*yield*/, this.brandService.dislike(this.like)];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 4:
+                        error_7 = _a.sent();
+                        if (error_7.status != 201)
+                            this.Succes = false;
+                        this.presentToast(error_7.error.error);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        if (this.Succes) {
+                            this.fillItens();
+                            this.comment.description = null;
+                        }
+                        this.loading.dismiss();
+                        return [7 /*endfinally*/];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DetailPage.prototype.dislikeProduct = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var error_8;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.like.email = this.usr.email;
+                        this.like.brandId = this.id;
+                        this.Succes = true;
+                        return [4 /*yield*/, this.presentLoading()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, 5, 6]);
+                        return [4 /*yield*/, this.productService.dislike(this.like)];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 6];
+                    case 4:
+                        error_8 = _a.sent();
+                        if (error_8.status != 201)
+                            this.Succes = false;
+                        this.presentToast(error_8.error.error);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        if (this.Succes) {
+                            this.fillItens();
+                            this.comment.description = null;
+                        }
+                        this.loading.dismiss();
+                        return [7 /*endfinally*/];
+                    case 6: return [2 /*return*/];
                 }
             });
         });

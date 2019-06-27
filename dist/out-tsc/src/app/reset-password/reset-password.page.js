@@ -4,14 +4,16 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/services/domain/auth.service';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { ToastController, LoadingController } from '@ionic/angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 var ResetPasswordPage = /** @class */ (function () {
-    function ResetPasswordPage(loadingCtrl, toastCtrl, keyboard, authService, router, route) {
+    function ResetPasswordPage(loadingCtrl, toastCtrl, keyboard, authService, router, route, iab) {
         this.loadingCtrl = loadingCtrl;
         this.toastCtrl = toastCtrl;
         this.keyboard = keyboard;
         this.authService = authService;
         this.router = router;
         this.route = route;
+        this.iab = iab;
         this.userLogin = {};
     }
     ResetPasswordPage.prototype.ngOnInit = function () {
@@ -86,7 +88,8 @@ var ResetPasswordPage = /** @class */ (function () {
             Keyboard,
             AuthService,
             Router,
-            ActivatedRoute])
+            ActivatedRoute,
+            InAppBrowser])
     ], ResetPasswordPage);
     return ResetPasswordPage;
 }());

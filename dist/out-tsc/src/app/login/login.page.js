@@ -6,20 +6,46 @@ import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { API_CONFIG } from 'src/config/api.config';
 import { AuthService } from 'src/services/domain/auth.service';
 import { Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
 var LoginPage = /** @class */ (function () {
     function LoginPage(
     //private authService: AuthService,
-    loadingCtrl, toastCtrl, keyboard, authService, router) {
+    loadingCtrl, toastCtrl, keyboard, authService, router, fBuilder) {
         this.loadingCtrl = loadingCtrl;
         this.toastCtrl = toastCtrl;
         this.keyboard = keyboard;
         this.authService = authService;
         this.router = router;
+        this.fBuilder = fBuilder;
         this.wavesPosition = 0;
         this.wavesDifference = 100;
         this.userLogin = {};
         this.userRegister = {};
         this.imageUrl = API_CONFIG.baseUrl;
+        this.fGroup = this.fBuilder.group({
+            'name': [null, Validators.compose([
+                    Validators.required,
+                    Validators.minLength(4),
+                ])],
+            'email': [null, Validators.compose([
+                    Validators.required,
+                    Validators.pattern(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/)
+                ])],
+            'password': [null, Validators.compose([
+                    Validators.required,
+                    Validators.minLength(4),
+                ])],
+        }, { updateOn: 'blur' });
+        this.fGroupLogin = this.fBuilder.group({
+            'email': [null, Validators.compose([
+                    Validators.required,
+                    Validators.pattern(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/)
+                ])],
+            'password': [null, Validators.compose([
+                    Validators.required,
+                    Validators.minLength(4),
+                ])],
+        }, { updateOn: 'blur' });
     }
     LoginPage.prototype.ngOnInit = function () { };
     LoginPage.prototype.segmentChanged = function (event) {
@@ -38,6 +64,8 @@ var LoginPage = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.presentLoading()];
                     case 1:
                         _a.sent();
+                        this.userLogin.password = this.fGroupLogin.value.password;
+                        this.userLogin.email = this.fGroupLogin.value.email;
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 6]);
@@ -51,7 +79,7 @@ var LoginPage = /** @class */ (function () {
                         return [3 /*break*/, 6];
                     case 5:
                         this.loading.dismiss();
-                        this.router.navigate(['tabs/search']);
+                        this.router.navigate(['tabs/search/0']);
                         return [7 /*endfinally*/];
                     case 6: return [2 /*return*/];
                 }
@@ -66,6 +94,9 @@ var LoginPage = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.presentLoading()];
                     case 1:
                         _a.sent();
+                        this.userRegister.name = this.fGroup.value.name;
+                        this.userRegister.email = this.fGroup.value.email;
+                        this.userRegister.password = this.fGroup.value.password;
                         _a.label = 2;
                     case 2:
                         _a.trys.push([2, 4, 5, 6]);
@@ -129,7 +160,8 @@ var LoginPage = /** @class */ (function () {
             ToastController,
             Keyboard,
             AuthService,
-            Router])
+            Router,
+            FormBuilder])
     ], LoginPage);
     return LoginPage;
 }());

@@ -2,14 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from 'src/services/domain/product.service';
 import { ProductDTO } from 'src/models/product.dto';
 import { API_CONFIG } from 'src/config/api.config';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { BrandService } from 'src/services/domain/brand.service';
 import { BrandDTO } from 'src/models/brand.dto';
 import { Like } from '../interfaces/like';
 import { Comments } from '../interfaces/comments';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { StorageService } from 'src/services/domain/storage.service';
-
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 @Component({
   selector: 'app-search',
   templateUrl: './search.page.html',
@@ -24,7 +25,10 @@ export class SearchPage implements OnInit {
     private router: Router,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
+    private route: ActivatedRoute,
     private storage: StorageService,
+    private androidPermissions: AndroidPermissions,
+    private barcodeScanner: BarcodeScanner,
 
   ) { }
 
@@ -37,6 +41,26 @@ export class SearchPage implements OnInit {
   public comment: Comments = {};
   private Succes: Boolean;
   private loading: any;
+  barcodeData: any;
+  private useScan : any;
+  emptyProducts: ProductDTO[];
+  emptyBrands: BrandDTO[];
+  public sections: any = {
+    first: 'Products',
+    second: 'Brands',
+    selectedSection: ''
+ };
+  ngOnInit() {
+    this.usr = this.storage.getLocalUser();
+    this.useScan = this.route.snapshot.paramMap.get('scan');
+
+    this.androidPermissions.requestPermissions([this.androidPermissions.PERMISSION.CAMERA, this.androidPermissions.PERMISSION.GET_ACCOUNTS]);
+    if(this.useScan == 1)
+    {
+      this.scanCode();
+    }
+  }
+
   async searchItens(ev) {
     
     this.search = ev;
@@ -45,6 +69,7 @@ export class SearchPage implements OnInit {
      await this.productService.findByName(val)
         .subscribe(response => {
           this.products = response;
+          this.sections.selectedSection = this.sections.first;
           return true;
         },
           error => {
@@ -53,6 +78,8 @@ export class SearchPage implements OnInit {
      await this.brandService.findByName(val)
         .subscribe(response => {
           this.brands = response;
+
+          this.sections.selectedSection = this.sections.second;
         },
           error => {
             this.brands = null;
@@ -147,6 +174,58 @@ export class SearchPage implements OnInit {
     }
   }
 
+  scanCode(){
+    this.searched = false;
+    this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA).then(
+      result => console.log('Has permission?',result.hasPermission),
+      err => this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA)
+    );
+    this.barcodeScanner.scan().then(barcodeData => {
+      this.presentToast("Leitura do Código Completa");
+      this.barcodeData = barcodeData.text;
+      this.requestProduct();
+     }).catch(err => {
+         console.log('Error', err);
+     });
+  }
+  async requestProduct(){
+    await this.productService.findByBarcode(this.barcodeData)
+          .subscribe(response => {
+            this.products = response;
+            return true;
+          },
+            error => {
+              this.products = null;
+            });
+         this.searched =true;
+  }
+
+  async segmentChanged(event){ 
+    this.products = this.emptyProducts;
+    this.brands = this.emptyBrands;
+    var val = event.target.value;
+    if(val == 'Products'){
+      await this.productService.findAll()
+        .subscribe(response => {
+          this.products = response;
+          return true;
+        },
+          error => {
+            this.products = null;
+          });
+    }
+    if(val == 'Brands'){
+      await this.brandService.findAll()
+      .subscribe(response => {
+        this.brands = response;
+      },
+        error => {
+          this.brands = null;
+        });
+     this.searched =true;
+    }
+  }
+
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({ message: 'Aguarde...' });
     return this.loading.present();
@@ -156,8 +235,6 @@ export class SearchPage implements OnInit {
     const toast = await this.toastCtrl.create({ message, duration: 2000 });
     toast.present();
   }
-  ngOnInit() {
-    this.usr = this.storage.getLocalUser();
-  }
+
 
 }

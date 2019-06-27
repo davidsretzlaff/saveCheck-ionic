@@ -20,7 +20,7 @@ const routes: Routes = [
         path: 'search',
         children: [
           {
-            path: '',
+            path: ':scan',
             loadChildren: '../search/search.module#SearchPageModule'
           }
         ]
@@ -58,7 +58,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/tabs/search',
+    redirectTo: '/tabs/search/0',
     pathMatch: 'full'
   }
 ];

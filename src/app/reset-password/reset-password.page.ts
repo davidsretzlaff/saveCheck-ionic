@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/services/domain/auth.service';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { ToastController, LoadingController } from '@ionic/angular';
-
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.page.html',
@@ -18,7 +18,8 @@ export class ResetPasswordPage implements OnInit {
     public keyboard: Keyboard,
     private authService : AuthService,
     private router: Router,
-    private route: ActivatedRoute,    
+    private route: ActivatedRoute,
+    private iab: InAppBrowser   
   ) { }
   public userLogin: User = {};
   private loading: any;

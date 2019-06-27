@@ -25,7 +25,9 @@ export class ProductService {
     findById(id): Observable<ProductDTO>{
         return this.http.get<ProductDTO>(`${API_CONFIG.baseUrl}/product/`+id);
     }
-
+    findByBarcode(barcode): Observable<ProductDTO[]>{
+      return this.http.get<ProductDTO[]>(`${API_CONFIG.baseUrl}/product/barcode/`+barcode);
+   }
     newProduct(product: Product){
         return new Promise((resolve, reject) => {
             this.http.post(`${API_CONFIG.baseUrl}/product`, product)

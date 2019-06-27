@@ -81,7 +81,7 @@ export class LoginPage implements OnInit {
       this.presentToast(error.error.error);
     } finally {
       this.loading.dismiss();
-      this.router.navigate(['tabs/search'])
+      this.router.navigate(['tabs/search/0'])
     }
   }
 

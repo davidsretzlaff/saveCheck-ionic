@@ -55,11 +55,19 @@ export class SearchPage implements OnInit {
     this.useScan = this.route.snapshot.paramMap.get('scan');
 
     this.androidPermissions.requestPermissions([this.androidPermissions.PERMISSION.CAMERA, this.androidPermissions.PERMISSION.GET_ACCOUNTS]);
-    if(this.useScan == 1)
-    {
-      this.scanCode();
-    }
+   
   }
+
+ionViewWillEnter(){
+  this.useScan = this.route.snapshot.paramMap.get('scan');
+  if(this.useScan == 1)
+  {
+    this.scanCode();
+    console.log("ok");
+  }
+
+
+}
 
   async searchItens(ev) {
     

@@ -26,6 +26,15 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'component',
+        children: [
+          {
+            path: '',
+            loadChildren: '../component/component.module#ComponentPageModule'
+          }
+        ]
+      },
+      {
         path: 'likes',
         children: [
           {

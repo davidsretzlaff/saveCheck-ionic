@@ -13,7 +13,8 @@ const routes: Routes = [
   { path: 'forgot-password', loadChildren: './forgot-password/forgot-password.module#ForgotPasswordPageModule' },
   { path: 'reset-password', loadChildren: './reset-password/reset-password.module#ResetPasswordPageModule' },
   { path: 'new-product', loadChildren: './new-product/new-product.module#NewProductPageModule' },
-  { path: 'upload-modal', loadChildren: './upload-modal/upload-modal.module#UploadModalPageModule' }
+  { path: 'upload-modal', loadChildren: './upload-modal/upload-modal.module#UploadModalPageModule' },
+  { path: 'component', loadChildren: './component/component.module#ComponentPageModule' }
 ];
 @NgModule({
   imports: [
